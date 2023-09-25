@@ -28,15 +28,13 @@ public class MagicBrush : TerrainBrush {
     public BrushShape shape;
 
     public override void draw(int x, int z) {
-        float actualHeight;
-
         for (int zi = -radius; zi <= radius; zi++) {
             for (int xi = -radius; xi <= radius; xi++) {
                 if (shape == BrushShape.CIRCLE && xi * xi + zi * zi > radius * radius) {
                     continue;
                 }
 
-                actualHeight = terrain.get(x + xi, z + zi);
+                float actualHeight = terrain.get(x + xi, z + zi);
                 switch (type)
                 {
                     case BrushType.SIMPLE:
@@ -53,12 +51,12 @@ public class MagicBrush : TerrainBrush {
                         float distanceSquared = xi * xi + zi * zi;
                         float gaussianValue = Mathf.Exp(-distanceSquared / (2 * standardDeviation * standardDeviation));
                         float newheight = gaussianValue * height + actualHeight;
-                        terrain.set(x + xi, z + zi, (int)newheight);
+                        terrain.set(x + xi, z + zi, newheight);
                         break;
 
                     case BrushType.NOISE:
                         float randomFloat = UnityEngine.Random.Range(0.0f, height) + actualHeight;
-                        terrain.set(x + xi, z + zi, (int)randomFloat);
+                        terrain.set(x + xi, z + zi, randomFloat);
                         break;
 
                     case BrushType.SMOOTH:
