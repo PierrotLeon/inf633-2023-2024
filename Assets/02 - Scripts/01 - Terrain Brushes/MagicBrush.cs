@@ -8,34 +8,44 @@ public class MagicBrush : TerrainBrush {
 
     public enum BrushType
     {
-        SQUARE,
-        CIRCLE,
+        SIMPLE,
+        INCREMENTAL,
         NORMAL,
         NOISE,
-        SMOOTH
+        SMOOTH,
+        ERASE
+    };
+
+    public enum BrushShape
+    {
+        SQUARE,
+        CIRCLE,
     };
 
     public float height = 5;
 
     public BrushType type;
+    public BrushShape shape;
 
     public override void draw(int x, int z) {
         float actualHeight;
 
         for (int zi = -radius; zi <= radius; zi++) {
             for (int xi = -radius; xi <= radius; xi++) {
+                if (shape == BrushShape.CIRCLE && xi * xi + zi * zi > radius * radius) {
+                    continue;
+                }
+
                 actualHeight = terrain.get(x + xi, z + zi);
                 switch (type)
                 {
-                    case BrushType.SQUARE:
-                        terrain.set(x + xi, z + zi, height + actualHeight);
+                    case BrushType.SIMPLE:
+                        terrain.set(x + xi, z + zi, height);
                         break;
 
-                    case BrushType.CIRCLE:
-                        if (xi * xi + zi * zi <= radius * radius)
-                        {
-                            terrain.set(x + xi, z + zi, height + actualHeight);
-                        }
+                    case BrushType.INCREMENTAL:
+                        float hloc = terrain.get(x + xi, z + zi);
+                        terrain.set(x + xi, z + zi, height + actualHeight);
                         break;
 
                     case BrushType.NORMAL:
@@ -60,8 +70,10 @@ public class MagicBrush : TerrainBrush {
                         terrain.set(x + xi, z + zi, smoothheight);
                         break;
 
+                    case BrushType.ERASE:
+                        terrain.set(x + xi, z + zi, 0);
+                        break;
                 }
-                
             }
         }
     }
