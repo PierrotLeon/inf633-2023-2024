@@ -52,7 +52,12 @@ public class MagicBrush : TerrainBrush {
                         break;
 
                     case BrushType.SMOOTH:
-                        //TO DO
+                        float hlocprevx = terrain.get(x + xi - 1, z + zi);
+                        float hlocnextx = terrain.get(x + xi + 1, z + zi);
+                        float hlocprevz = terrain.get(x + xi, z + zi - 1);
+                        float hlocnextz = terrain.get(x + xi, z + zi + 1);
+                        float smoothheight = (hlocprevx + hlocnextx + hlocprevz + hlocnextz) / 4;
+                        terrain.set(x + xi, z + zi, smoothheight);
                         break;
 
                 }
