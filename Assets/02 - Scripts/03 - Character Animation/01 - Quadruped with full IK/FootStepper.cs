@@ -48,11 +48,11 @@ public class FootStepper : MonoBehaviour
 
         // START TODO ###################
 
-        // float distFromHome = ...
-        // float angleFromHome = ...
+        float distFromHome = Vector3.Magnitude(homeTransform.position - transform.position);
+        float angleFromHome = Quaternion.Angle(homeTransform.rotation, transform.rotation);
 
         // Change condition!
-        if (false)
+        if (distFromHome > distanceThreshold | angleFromHome > angleThreshold)
         {
             // END TODO ###################
 

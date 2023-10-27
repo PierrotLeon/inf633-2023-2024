@@ -22,6 +22,7 @@ public class Animal : MonoBehaviour
 
     [Header("Sensor - Vision")]
     public float maxVision = 20.0f;
+    public float visionGainHeight = 100.0f;
     public float stepAngle = 10.0f;
     public int nEyes = 5;
 
@@ -109,8 +110,19 @@ public class Animal : MonoBehaviour
         float[] output = brain.getOutput(vision);
 
         // 3. Act using actuators.
+        // The animal loses energy if it moves up
         float angle = (output[0] * 2.0f - 1.0f) * maxAngle;
         tfm.Rotate(0.0f, angle, 0.0f);
+        Vector3 normal = terrain.getNormal(tfm.position.x, tfm.position.z);
+        Quaternion rotAnimal = tfm.rotation * Quaternion.Euler(0.0f, 0.0f, 0.0f);
+        Vector3 forwardAnimal = rotAnimal * Vector3.forward;
+        float energyLoss = lossEnergy * Vector3.Dot(forwardAnimal, normal);
+        if (energyLoss < 0.0f)
+        {
+            energy += 3*energyLoss;
+        }
+
+
     }
 
     /// <summary>
@@ -128,9 +140,13 @@ public class Animal : MonoBehaviour
             float sx = tfm.position.x * ratio.x;
             float sy = tfm.position.z * ratio.y;
             vision[i] = 1.0f;
+            //The animal gets a larger field of vision if it is higher
+            float altitude = terrain.get(tfm.position.x, tfm.position.z);
+            float visionGain = maxVision;
+            if (altitude < visionGainHeight) { visionGain = maxVision * altitude / visionGainHeight; }
 
             // Interate over vision length.
-            for (float distance = 1.0f; distance < maxVision; distance += 0.5f)
+            for (float distance = 1.0f; distance < maxVision+ visionGain; distance += 0.5f)
             {
                 // Position where we are looking at.
                 float px = (sx + (distance * forwardAnimal.x * ratio.x));

@@ -14,6 +14,7 @@ public class GeneticAlgo : MonoBehaviour
     [Header("Dynamic elements")]
     public float vegetationGrowthRate = 1.0f;
     public float currentGrowth;
+    public float maxAltitudeGrowth;
 
     private List<GameObject> animals;
     protected Terrain terrain;
@@ -66,8 +67,14 @@ public class GeneticAlgo : MonoBehaviour
         {
             int x = (int)(UnityEngine.Random.value * detail_sz.x);
             int y = (int)(UnityEngine.Random.value * detail_sz.y);
-            details[y, x] = 1;
-            currentGrowth -= 1.0f;
+
+            Vector3 scale = terrain.terrainData.heightmapScale;
+            float altitude = customTerrain.getInterp(x / scale.x / detail_sz.x * width, y / scale.z / detail_sz.y * height);
+            float altitudeTest = UnityEngine.Random.value * altitude / maxAltitudeGrowth;
+            if (altitudeTest < 1.0f) { 
+                details[y, x] = 1;
+                currentGrowth -= 1.0f;
+            }
         }
         customTerrain.saveDetails();
     }

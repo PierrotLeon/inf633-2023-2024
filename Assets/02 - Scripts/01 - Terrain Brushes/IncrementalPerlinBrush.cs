@@ -5,19 +5,26 @@ using System;
 
 public class IncrementalPerlinBrush : TerrainBrush {
 
+    public int fractal_level = 5;
+    public float height = 1f;
     public float detailScale = 100f;
-    public float noiseHeight = 1f;
+    public int fractality = 5;
     public override void draw(int x, int z) {
         for (int zi = -radius; zi <= radius; zi++) {
             for (int xi = -radius; xi <= radius; xi++) {
                 float hloc = terrain.get(x + xi, z + zi);
-                float deltaH = noiseHeight * (Mathf.PerlinNoise((float)Math.Cos(z) + (float)xi / radius * detailScale, (float)Math.Cos(x) + (float)zi / radius * detailScale));
-                deltaH *= sigmoid(xi + radius -5.0f) * sigmoid(zi + radius - 5.0f) * sigmoid(-xi + radius - 5.0f) * sigmoid(-zi + radius - 5.0f);
+                float deltaH = 0;
+                for (int k = 0; k < fractal_level; k++)
+                {
+                    deltaH += height * (float)Math.Pow(1.5, -k) * Mathf.PerlinNoise((float)Math.Pow(2, k) * (float)(x + xi) / detailScale, (float)Math.Pow(2, k) * (float)(z + zi) / detailScale);
+                }
+                deltaH *= bell(xi, zi, radius);
                 terrain.set(x + xi, z + zi, hloc + deltaH);
             }
         }
     }
-    private static float sigmoid(float x){
-        return 1.0f / (1.0f + (float)Math.Exp(-x));
+    private static float bell(float x, float z, int radius)
+    {
+        return 1.0f / ((float)Math.Exp(((float)Math.Pow(x, 2) + (float)Math.Pow(z, 2))/(float)Math.Pow(radius, 2)));
     }
 }
