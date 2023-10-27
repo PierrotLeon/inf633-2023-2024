@@ -5,7 +5,8 @@ using System;
 
 public class IncrementalPerlinBrush : TerrainBrush {
 
-    public int fractal_level = 5;
+    public int max_fractal_level = 5;
+    public int min_fractal_level = 0;
     public float height = 1f;
     public float detailScale = 100f;
     public int fractality = 5;
@@ -14,7 +15,7 @@ public class IncrementalPerlinBrush : TerrainBrush {
             for (int xi = -radius; xi <= radius; xi++) {
                 float hloc = terrain.get(x + xi, z + zi);
                 float deltaH = 0;
-                for (int k = 0; k < fractal_level; k++)
+                for (int k = min_fractal_level; k < max_fractal_level; k++)
                 {
                     deltaH += height * (float)Math.Pow(1.5, -k) * Mathf.PerlinNoise((float)Math.Pow(2, k) * (float)(x + xi) / detailScale, (float)Math.Pow(2, k) * (float)(z + zi) / detailScale);
                 }
