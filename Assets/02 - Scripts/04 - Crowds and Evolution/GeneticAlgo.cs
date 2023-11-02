@@ -40,8 +40,7 @@ public class GeneticAlgo : MonoBehaviour
         {
             GameObject animal = makeAnimal();
             animals.Add(animal);
-            GameObject alligator = makeAnimal(animal.transform.position, alligatorPrefab);
-            aligators.Add(alligator);
+
         }
     }
 
@@ -70,11 +69,19 @@ public class GeneticAlgo : MonoBehaviour
         {
             int x = (int)(UnityEngine.Random.value * detail_sz.x);
             int y = (int)(UnityEngine.Random.value * detail_sz.y);
-            details[y, x] = 1;
-            currentGrowth -= 1.0f;
+
+            Vector3 scale = terrain.terrainData.heightmapScale;
+            float altitude = customTerrain.getInterp(x / scale.x / detail_sz.x * width, y / scale.z / detail_sz.y * height);
+            float altitudeTest = UnityEngine.Random.value * altitude / maxAltitudeGrowth;
+            if (altitudeTest < 1.0f)
+            {
+                details[y, x] = 1;
+                currentGrowth -= 1.0f;
+            }
         }
         customTerrain.saveDetails();
     }
+
 
     /// <summary>
     /// Method to instantiate an animal prefab. It must contain the animal.cs class attached.
@@ -90,17 +97,13 @@ public class GeneticAlgo : MonoBehaviour
         return animal;
     }
 
-    public GameObject makeAnimal(Vector3 position, GameObject secondPrefab)
+    public GameObject makeAnimal(Vector3 position)
     {
         // Instantiate the first prefab (animal).
         GameObject animal = Instantiate(animalPrefab, transform);
         animal.GetComponent<Animal>().Setup(customTerrain, this);
         animal.transform.position = position;
         animal.transform.Rotate(0.0f, UnityEngine.Random.value * 360.0f, 0.0f);
-
-        // Instantiate the second prefab (alligator).
-        GameObject alligator = Instantiate(secondPrefab, transform);
-        alligator.transform.position = position; // Adjust position as needed.
 
         return animal;
     }
