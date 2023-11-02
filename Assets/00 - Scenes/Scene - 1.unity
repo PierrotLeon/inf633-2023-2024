@@ -695,7 +695,10 @@ GameObject:
   - component: {fileID: 374040428}
   - component: {fileID: 374040427}
   - component: {fileID: 374040430}
+  - component: {fileID: 374040443}
+  - component: {fileID: 374040441}
   - component: {fileID: 374040431}
+  - component: {fileID: 374040442}
   - component: {fileID: 374040435}
   - component: {fileID: 374040440}
   m_Layer: 0
@@ -778,7 +781,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debug: {fileID: 1822113349}
-  brush_radius: 10
+  brush_radius: 48
   object_prefab: {fileID: 100000, guid: 6aab193b7693b5e4c9741f1917d2987c, type: 3}
   Prefabs: []
   min_scale: 0.8
@@ -815,7 +818,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 374040426}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 58addec6626ef40dfb932e8efbbb6236, type: 3}
   m_Name: 
@@ -825,6 +828,45 @@ MonoBehaviour:
   vegetationGrowthRate: 1
   currentGrowth: 0
   maxAltitudeGrowth: 10
+--- !u!114 &374040441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 374040426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83b7729b6fbeafe46b454ee4daf4e1ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  height: 0
+--- !u!114 &374040442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 374040426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5869f039f240cf4c85b947433912918, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &374040443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 374040426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 833cb4cf1e981974798ad23da7c52109, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MinimalDistance: 1
+  nBins: 10
 --- !u!1 &534669902
 GameObject:
   m_ObjectHideFlags: 0
@@ -2132,7 +2174,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2137751596}
-  m_LocalRotation: {x: 0.09467273, y: 0.4793379, z: -0.05210416, w: 0.870952}
+  m_LocalRotation: {x: 0.09467271, y: 0.4793379, z: -0.052104156, w: 0.870952}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
