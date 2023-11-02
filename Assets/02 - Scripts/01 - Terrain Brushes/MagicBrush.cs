@@ -53,12 +53,12 @@ public class MagicBrush : TerrainBrush {
                         float distanceSquared = xi * xi + zi * zi;
                         float gaussianValue = Mathf.Exp(-distanceSquared / (2 * standardDeviation * standardDeviation));
                         float newheight = gaussianValue * height + actualHeight;
-                        terrain.set(x + xi, z + zi, (int)newheight);
+                        terrain.set(x + xi, z + zi, newheight);
                         break;
 
                     case BrushType.NOISE:
                         float randomFloat = UnityEngine.Random.Range(0.0f, height) + actualHeight;
-                        terrain.set(x + xi, z + zi, (int)randomFloat);
+                        terrain.set(x + xi, z + zi, randomFloat);
                         break;
 
                     case BrushType.SMOOTH:
