@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Animal : MonoBehaviour
+public class AnimalCarn : MonoBehaviour
 {
 
     [Header("Animal parameters")]
@@ -39,10 +39,12 @@ public class Animal : MonoBehaviour
     private float[] vision;
 
     // Genetic alg.
-    private GeneticAlgo genetic_algo = null;
+    private GeneticCarn genetic_carn = null;
 
     // Renderer.
     private Material mat = null;
+
+    private List<GameObject> childPrefabs = new List<GameObject>();
 
     void Start()
     {
@@ -66,7 +68,7 @@ public class Animal : MonoBehaviour
             brain = new SimpleNeuralNet(networkStruct);
         if (terrain == null)
             return;
-        if (details == null)
+        if (childPrefabs != null && childPrefabs.Count == 0)
         {
             UpdateSetup();
             return;
@@ -88,14 +90,14 @@ public class Animal : MonoBehaviour
             if (energy > maxEnergy)
                 energy = maxEnergy;
 
-            genetic_algo.addOffspring(this);
+            genetic_carn.addOffspring(this);
         }
 
         // If the energy is below 0, the animal dies.
         if (energy < 0)
         {
             energy = 0.0f;
-            genetic_algo.removeAnimal(this);
+            genetic_carn.removeAnimal(this);
         }
 
         // Update the color of the animal as a function of the energy that it contains.
@@ -169,19 +171,26 @@ public class Animal : MonoBehaviour
         }
     }
 
-    public void Setup(CustomTerrain ct, GeneticAlgo ga)
+    public void Setup(CustomTerrain ct, GeneticCarn ga)
     {
         terrain = ct;
-        genetic_algo = ga;
+        genetic_carn = ga;
         UpdateSetup();
     }
 
     private void UpdateSetup()
     {
-        detailSize = terrain.detailSize();
-        Vector3 gsz = terrain.terrainSize();
-        terrainSize = new Vector2(gsz.x, gsz.z);
-        details = terrain.getDetails();
+        int childCount = terrain.transform.childCount;
+        childPrefabs.Clear(); // Clear the list before populating it again
+
+        for (int i = 0; i < childCount; i++)
+        {
+            Transform child = terrain.transform.GetChild(i);
+            if (child != null && child.gameObject != null)
+            {
+                childPrefabs.Add(child.gameObject);
+            }
+        }
     }
 
     public void InheritBrain(SimpleNeuralNet other, bool mutate)
@@ -198,5 +207,7 @@ public class Animal : MonoBehaviour
     {
         return energy / maxEnergy;
     }
+
+
 
 }

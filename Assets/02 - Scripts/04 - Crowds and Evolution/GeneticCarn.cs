@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GeneticAlgo : MonoBehaviour
+public class GeneticCarn : MonoBehaviour
 {
 
     [Header("Genetic Algorithm parameters")]
@@ -48,10 +48,10 @@ public class GeneticAlgo : MonoBehaviour
         {
             animals.Add(makeAnimal());
         }
-        customTerrain.debug.text = "N° animals: " + animals.Count.ToString();
+        //UnityEngine.Debug.Log("N° of carns: " + animals.Count.ToString()); ;
 
         // Update grass elements/food resources.
-        updateResources();
+        //updateResources();
     }
 
     /// <summary>
@@ -80,7 +80,7 @@ public class GeneticAlgo : MonoBehaviour
     public GameObject makeAnimal(Vector3 position)
     {
         GameObject animal = Instantiate(animalPrefab, transform);
-        animal.GetComponent<Animal>().Setup(customTerrain, this);
+        animal.GetComponent<AnimalCarn>().Setup(customTerrain, this);
         animal.transform.position = position;
         animal.transform.Rotate(0.0f, UnityEngine.Random.value * 360.0f, 0.0f);
         return animal;
@@ -95,7 +95,7 @@ public class GeneticAlgo : MonoBehaviour
         Vector3 scale = terrain.terrainData.heightmapScale;
         float x = UnityEngine.Random.value * width;
         float z = UnityEngine.Random.value * height;
-        float y = customTerrain.getInterp(x / scale.x, z / scale.z);
+        float y = 0;
         return makeAnimal(new Vector3(x, y, z));
     }
 
@@ -103,10 +103,10 @@ public class GeneticAlgo : MonoBehaviour
     /// Method to add an animal inherited from anothed. It spawns where the parent was.
     /// </summary>
     /// <param name="parent"></param>
-    public void addOffspring(Animal parent)
+    public void addOffspring(AnimalCarn parent)
     {
         GameObject animal = makeAnimal(parent.transform.position);
-        animal.GetComponent<Animal>().InheritBrain(parent.GetBrain(), true);
+        animal.GetComponent<AnimalCarn>().InheritBrain(parent.GetBrain(), true);
         animals.Add(animal);
     }
 
@@ -114,7 +114,7 @@ public class GeneticAlgo : MonoBehaviour
     /// Remove instance of an animal.
     /// </summary>
     /// <param name="animal"></param>
-    public void removeAnimal(Animal animal)
+    public void removeAnimal(AnimalCarn animal)
     {
         animals.Remove(animal.transform.gameObject);
         Destroy(animal.transform.gameObject);
