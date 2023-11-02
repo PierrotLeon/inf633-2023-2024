@@ -15,6 +15,7 @@ public class GeneticAlgo : MonoBehaviour
     [Header("Dynamic elements")]
     public float vegetationGrowthRate = 1.0f;
     public float currentGrowth;
+    public float maxAltitudeGrowth;
 
     private List<GameObject> animals;
     private List<GameObject> aligators;
@@ -94,17 +95,6 @@ public class GeneticAlgo : MonoBehaviour
         animal.GetComponent<Animal>().Setup(customTerrain, this);
         animal.transform.position = position;
         animal.transform.Rotate(0.0f, UnityEngine.Random.value * 360.0f, 0.0f);
-        return animal;
-    }
-
-    public GameObject makeAnimal(Vector3 position)
-    {
-        // Instantiate the first prefab (animal).
-        GameObject animal = Instantiate(animalPrefab, transform);
-        animal.GetComponent<Animal>().Setup(customTerrain, this);
-        animal.transform.position = position;
-        animal.transform.Rotate(0.0f, UnityEngine.Random.value * 360.0f, 0.0f);
-
         return animal;
     }
 
