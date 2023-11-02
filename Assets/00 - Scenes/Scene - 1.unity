@@ -836,7 +836,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4546c6fe2b29a047a5ab5b52771b3b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 5
 --- !u!1 &534669902
 GameObject:
   m_ObjectHideFlags: 0
@@ -2144,7 +2143,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2137751596}
-  m_LocalRotation: {x: 0.09467271, y: 0.4793379, z: -0.052104156, w: 0.870952}
+  m_LocalRotation: {x: 0.09467273, y: 0.4793379, z: -0.05210416, w: 0.870952}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2304,30 +2303,90 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1688669856}
     m_Modifications:
+    - target: {fileID: 2954251902850376964, guid: 292e0cc1c13240549bc0ea73726cca30,
+        type: 3}
+      propertyPath: moveDuration
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2954251902850376964, guid: 292e0cc1c13240549bc0ea73726cca30,
+        type: 3}
+      propertyPath: distanceThreshold
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2954251902850376964, guid: 292e0cc1c13240549bc0ea73726cca30,
+        type: 3}
+      propertyPath: stepOvershootFraction
+      value: 0.414
+      objectReference: {fileID: 0}
+    - target: {fileID: 2954251902890950202, guid: 292e0cc1c13240549bc0ea73726cca30,
+        type: 3}
+      propertyPath: moveDuration
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2954251902890950202, guid: 292e0cc1c13240549bc0ea73726cca30,
+        type: 3}
+      propertyPath: distanceThreshold
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2954251902890950202, guid: 292e0cc1c13240549bc0ea73726cca30,
+        type: 3}
+      propertyPath: stepOvershootFraction
+      value: 0.414
+      objectReference: {fileID: 0}
+    - target: {fileID: 2954251903069469998, guid: 292e0cc1c13240549bc0ea73726cca30,
+        type: 3}
+      propertyPath: moveDuration
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2954251903069469998, guid: 292e0cc1c13240549bc0ea73726cca30,
+        type: 3}
+      propertyPath: distanceThreshold
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2954251903069469998, guid: 292e0cc1c13240549bc0ea73726cca30,
+        type: 3}
+      propertyPath: stepOvershootFraction
+      value: 0.414
+      objectReference: {fileID: 0}
     - target: {fileID: 2954251903923410748, guid: 292e0cc1c13240549bc0ea73726cca30,
         type: 3}
       propertyPath: m_RotationOffsets.Array.data[0].x
-      value: 3.0129883
+      value: 3.0129874
       objectReference: {fileID: 0}
     - target: {fileID: 2954251903923410748, guid: 292e0cc1c13240549bc0ea73726cca30,
         type: 3}
       propertyPath: m_RotationOffsets.Array.data[0].z
-      value: -5.2307153
+      value: -5.230716
       objectReference: {fileID: 0}
     - target: {fileID: 2954251904142021965, guid: 292e0cc1c13240549bc0ea73726cca30,
         type: 3}
       propertyPath: m_RotationOffsets.Array.data[0].x
-      value: 3.012983
+      value: 3.0129821
       objectReference: {fileID: 0}
     - target: {fileID: 2954251904142021965, guid: 292e0cc1c13240549bc0ea73726cca30,
         type: 3}
       propertyPath: m_RotationOffsets.Array.data[0].y
-      value: 60.137638
+      value: 60.137646
       objectReference: {fileID: 0}
     - target: {fileID: 2954251904142021965, guid: 292e0cc1c13240549bc0ea73726cca30,
         type: 3}
       propertyPath: m_RotationOffsets.Array.data[0].z
-      value: 5.230717
+      value: 5.2307177
+      objectReference: {fileID: 0}
+    - target: {fileID: 2954251904603069286, guid: 292e0cc1c13240549bc0ea73726cca30,
+        type: 3}
+      propertyPath: moveDuration
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2954251904603069286, guid: 292e0cc1c13240549bc0ea73726cca30,
+        type: 3}
+      propertyPath: distanceThreshold
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2954251904603069286, guid: 292e0cc1c13240549bc0ea73726cca30,
+        type: 3}
+      propertyPath: stepOvershootFraction
+      value: 0.414
       objectReference: {fileID: 0}
     - target: {fileID: 8107060311548940698, guid: 292e0cc1c13240549bc0ea73726cca30,
         type: 3}
@@ -2339,6 +2398,11 @@ PrefabInstance:
       propertyPath: goal
       value: 
       objectReference: {fileID: 1525859055}
+    - target: {fileID: 8107060311548940699, guid: 292e0cc1c13240549bc0ea73726cca30,
+        type: 3}
+      propertyPath: moveSpeed
+      value: 1.8
+      objectReference: {fileID: 0}
     - target: {fileID: 8107060311549103610, guid: 292e0cc1c13240549bc0ea73726cca30,
         type: 3}
       propertyPath: m_RootOrder
