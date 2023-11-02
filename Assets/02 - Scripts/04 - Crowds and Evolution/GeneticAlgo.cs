@@ -10,12 +10,14 @@ public class GeneticAlgo : MonoBehaviour
     [Header("Genetic Algorithm parameters")]
     public int popSize = 100;
     public GameObject animalPrefab;
+    public GameObject alligatorPrefab;
 
     [Header("Dynamic elements")]
     public float vegetationGrowthRate = 1.0f;
     public float currentGrowth;
 
     private List<GameObject> animals;
+    private List<GameObject> aligators;
     protected Terrain terrain;
     protected CustomTerrain customTerrain;
     protected float width;
@@ -38,6 +40,8 @@ public class GeneticAlgo : MonoBehaviour
         {
             GameObject animal = makeAnimal();
             animals.Add(animal);
+            GameObject alligator = makeAnimal(animal.transform.position, alligatorPrefab);
+            aligators.Add(alligator);
         }
     }
 
@@ -86,6 +90,21 @@ public class GeneticAlgo : MonoBehaviour
         return animal;
     }
 
+    public GameObject makeAnimal(Vector3 position, GameObject secondPrefab)
+    {
+        // Instantiate the first prefab (animal).
+        GameObject animal = Instantiate(animalPrefab, transform);
+        animal.GetComponent<Animal>().Setup(customTerrain, this);
+        animal.transform.position = position;
+        animal.transform.Rotate(0.0f, UnityEngine.Random.value * 360.0f, 0.0f);
+
+        // Instantiate the second prefab (alligator).
+        GameObject alligator = Instantiate(secondPrefab, transform);
+        alligator.transform.position = position; // Adjust position as needed.
+
+        return animal;
+    }
+
     /// <summary>
     /// If makeAnimal() is called without position, we randomize it on the terrain.
     /// </summary>
@@ -118,6 +137,13 @@ public class GeneticAlgo : MonoBehaviour
     {
         animals.Remove(animal.transform.gameObject);
         Destroy(animal.transform.gameObject);
+    }
+
+    public void updateSpeed(Animal animal, float speed)
+    {
+        CapsuleAutoController capsuleMotionScript = animal.GetComponent<CapsuleAutoController>();
+        capsuleMotionScript.changeSpeed(speed);
+
     }
 
 }
