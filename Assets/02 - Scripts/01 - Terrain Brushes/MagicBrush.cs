@@ -8,12 +8,15 @@ public class MagicBrush : TerrainBrush {
 
     public enum BrushType
     {
+        ERASE,
         SIMPLE,
         INCREMENTAL,
         NORMAL,
         NOISE,
         SMOOTH,
-        ERASE
+        EROSION,
+        PERLIN_FIX_HEIGHT,
+        PERLIN
     };
 
     public enum BrushShape
@@ -23,6 +26,11 @@ public class MagicBrush : TerrainBrush {
     };
 
     public float height = 5;
+    public int max_fractal_level = 5;
+    public int min_fractal_level = 0;
+    public float detailScale = 100f;
+    public int fractal_level = 5;
+    public float erosionFactor = 0.0001f;
 
     public BrushType type;
     public BrushShape shape;
@@ -44,7 +52,6 @@ public class MagicBrush : TerrainBrush {
                         break;
 
                     case BrushType.INCREMENTAL:
-                        float hloc = terrain.get(x + xi, z + zi);
                         terrain.set(x + xi, z + zi, height + actualHeight);
                         break;
 
@@ -73,8 +80,43 @@ public class MagicBrush : TerrainBrush {
                     case BrushType.ERASE:
                         terrain.set(x + xi, z + zi, 0);
                         break;
+
+                    case BrushType.EROSION:                        
+                        hlocprevx = terrain.get(x + xi - 1, z + zi);
+                        hlocnextx = terrain.get(x + xi + 1, z + zi);
+                        hlocprevz = terrain.get(x + xi, z + zi - 1);
+                        hlocnextz = terrain.get(x + xi, z + zi + 1);
+                        height = (hlocprevx + hlocnextx + hlocprevz + hlocnextz) / 4;
+                        float steepness = (terrain.getSteepness(x + xi + 1, z + zi) + terrain.getSteepness(x + xi - 1, z + zi) + terrain.getSteepness(x + xi, z + zi + 1) + terrain.getSteepness(x + xi, z + zi - 1)) / 4.0f;
+                        terrain.set(x + xi, z + zi, height - erosionFactor * steepness * steepness);
+                        break;
+
+                    case BrushType.PERLIN_FIX_HEIGHT:
+                        float deltaH = 0;
+                        for (int k = 0; k < fractal_level; k++)
+                        {
+                            deltaH += height * (float)Math.Pow(1.5, -k) * Mathf.PerlinNoise((float)Math.Pow(2, k) * (float)(x + xi) / detailScale, (float)Math.Pow(2, k) * (float)(z + zi) / detailScale);
+                        }
+                        terrain.set(x + xi, z + zi, deltaH);
+                        break;
+
+                    case BrushType.PERLIN:
+                        float hloc = terrain.get(x + xi, z + zi);
+                        deltaH = 0;
+                        for (int k = min_fractal_level; k < max_fractal_level; k++)
+                        {
+                            deltaH += height * (float)Math.Pow(1.5, -k) * Mathf.PerlinNoise((float)Math.Pow(2, k) * (float)(x + xi) / detailScale, (float)Math.Pow(2, k) * (float)(z + zi) / detailScale);
+                        }
+                        deltaH *= bell(xi, zi, radius);
+                        terrain.set(x + xi, z + zi, hloc + deltaH);
+                        break;
                 }
             }
         }
+    }
+
+    private static float bell(float x, float z, int radius)
+    {
+        return 1.0f / ((float)Math.Exp(((float)Math.Pow(x, 2) + (float)Math.Pow(z, 2)) / (float)Math.Pow(radius, 2)));
     }
 }
