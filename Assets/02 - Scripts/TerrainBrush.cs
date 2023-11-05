@@ -8,6 +8,7 @@ public abstract class TerrainBrush : Brush {
         Vector3 grid = terrain.world2grid(x, z);
         draw((int)grid.x, (int)grid.z);
         terrain.save();
+        terrain.saveTextures();
     }
 
     public override void draw(float x, float z) {

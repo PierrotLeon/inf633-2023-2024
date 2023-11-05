@@ -60,19 +60,19 @@ public class CustomTerrain : MonoBehaviour {
         alphamaps = terrain_data.GetAlphamaps(0, 0, amap_width, amap_height);
 
         // Reset and save textures
-        // for (int y = 0; y < amap_height; y++) {
-        //     for (int x = 0; x < amap_width; x++) {
-        //         alphamaps[x, y, 0] = 1.0f;
-        //         alphamaps[x, y, 1] = 0.0f;
-        //     }
-        // }
-        // saveTextures();
+        //for (int y = 0; y < amap_height; y++) {
+        //   for (int x = 0; x < amap_width; x++) {
+        //        alphamaps[x, y, 0] = 1.0f;
+        //        alphamaps[x, y, 1] = 0.0f;
+        //   }
+        //}
+        saveTextures();
         // Reset and save grass
-        for (int y = 0; y < detail_height; y++) {
-            for (int x = 0; x < detail_width; x++) {
-                detail_layer[x, y] = 0;
-            }
-        }
+        //for (int y = 0; y < detail_height; y++) {
+        //    for (int x = 0; x < detail_width; x++) {
+        //        detail_layer[x, y] = 0;
+        //    }
+        //}
         saveDetails();
 
         cam = GameObject.FindGameObjectWithTag("SecondCamera").GetComponent<Camera>();
@@ -168,6 +168,21 @@ public class CustomTerrain : MonoBehaviour {
     public void set(float x, float z, float val) {
         set((int)x, (int)z, val);
     }
+    public void setTextures(int x, int z, float[] val)
+    {   
+        x = (x + heightmap_width) % heightmap_width;
+        z = (z + heightmap_height) % heightmap_height;
+        int n = val.Length;
+        if (n > terrain_data.terrainLayers.Length) { Debug.LogWarning("not enough terrain layers"); }
+        else 
+        {
+            for (int i = 0; i < n; i++)
+            {
+                alphamaps[z, x, i] = val[i];
+            }
+        }
+    }
+
 
     // Spawn a new object (tree)
     public void spawnObject(Vector3 loc, float scale, int proto_idx) {
@@ -267,6 +282,7 @@ public class CustomTerrain : MonoBehaviour {
     public void saveTextures() {
         terrain_data.SetAlphamaps(0, 0, alphamaps);
     }
+
     public void saveDetails() {
         terrain_data.SetDetailLayer(0, 0, 0, detail_layer);
     }
