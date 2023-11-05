@@ -16,7 +16,9 @@ public class MagicBrush : TerrainBrush {
         SMOOTH,
         EROSION,
         PERLIN_FIX_HEIGHT,
-        PERLIN
+        PERLIN,
+        TEXTURE,
+
     };
 
     public enum BrushShape
@@ -31,6 +33,7 @@ public class MagicBrush : TerrainBrush {
     public float detailScale = 100f;
     public int fractal_level = 5;
     public float erosionFactor = 0.0001f;
+    public float hColorChange = 50f;
 
     public BrushType type;
     public BrushShape shape;
@@ -86,9 +89,9 @@ public class MagicBrush : TerrainBrush {
                         hlocnextx = terrain.get(x + xi + 1, z + zi);
                         hlocprevz = terrain.get(x + xi, z + zi - 1);
                         hlocnextz = terrain.get(x + xi, z + zi + 1);
-                        height = (hlocprevx + hlocnextx + hlocprevz + hlocnextz) / 4;
+                        float h = (hlocprevx + hlocnextx + hlocprevz + hlocnextz) / 4;
                         float steepness = (terrain.getSteepness(x + xi + 1, z + zi) + terrain.getSteepness(x + xi - 1, z + zi) + terrain.getSteepness(x + xi, z + zi + 1) + terrain.getSteepness(x + xi, z + zi - 1)) / 4.0f;
-                        terrain.set(x + xi, z + zi, height - erosionFactor * steepness * steepness);
+                        terrain.set(x + xi, z + zi, h - erosionFactor * steepness * steepness);
                         break;
 
                     case BrushType.PERLIN_FIX_HEIGHT:
@@ -101,14 +104,30 @@ public class MagicBrush : TerrainBrush {
                         break;
 
                     case BrushType.PERLIN:
-                        float hloc = terrain.get(x + xi, z + zi);
                         deltaH = 0;
                         for (int k = min_fractal_level; k < max_fractal_level; k++)
                         {
                             deltaH += height * (float)Math.Pow(1.5, -k) * Mathf.PerlinNoise((float)Math.Pow(2, k) * (float)(x + xi) / detailScale, (float)Math.Pow(2, k) * (float)(z + zi) / detailScale);
                         }
                         deltaH *= bell(xi, zi, radius);
-                        terrain.set(x + xi, z + zi, hloc + deltaH);
+                        terrain.set(x + xi, z + zi, actualHeight + deltaH);
+                        break;
+
+                    case BrushType.TEXTURE:
+                        // this brush is set for use with four terrain layers, rocks, grass, cliff and water
+                        float angle = terrain.getSteepness(x + xi, z + zi);
+                        float afrac = (float)Math.Pow(angle / 90.0f, 2f);
+                        float hfrac = Math.Min(actualHeight, hColorChange) / hColorChange;
+                        float[] valeurs = { hfrac * (1f - afrac), (1f - hfrac) * (1f - afrac), afrac, 0f };
+                        if (actualHeight == 0f)
+                        {
+                            for (int i = 0; i < 3; i++)
+                            {
+                                valeurs[i] = 0f;
+                            }
+                            valeurs[3] = 1f;
+                        }
+                        terrain.setTextures(x + xi, z + zi, valeurs);
                         break;
                 }
             }

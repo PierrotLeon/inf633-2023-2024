@@ -189,7 +189,21 @@ public class CustomTerrain : MonoBehaviour {
     public void set(float x, float z, float val) {
         set((int)x, (int)z, val);
     }
-
+    //Set the balance of terrain layers
+    public void setTextures(int x, int z, float[] val)
+    {
+        x = (x + heightmap_width) % heightmap_width;
+        z = (z + heightmap_height) % heightmap_height;
+        int n = val.Length;
+        if (n > terrain_data.terrainLayers.Length) { Debug.LogWarning("not enough terrain layers"); }
+        else
+        {
+            for (int i = 0; i < n; i++)
+            {
+                alphamaps[z, x, i] = val[i];
+            }
+        }
+    }
     // Spawn a new object (tree)
     public TreeInstance spawnObject(Vector3 loc, float scale, int proto_idx) {
         TreeInstance obj = new TreeInstance();
