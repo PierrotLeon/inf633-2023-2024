@@ -55,7 +55,6 @@ public class FootStepper : MonoBehaviour
         if (distFromHome > distanceThreshold || angleFromHome > angleThreshold)
         {
             // END TODO ###################
-            UnityEngine.Debug.Log("Oi");
             // Get the grounded location for the feet. It can return false - in that case, it won't move.
             // This method modifies the values by reference, which are used later.
             if (GetGroundedEndPosition(out Vector3 endPos, out Vector3 endNormal))

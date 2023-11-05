@@ -164,7 +164,7 @@ public class QuadrupedProceduralMotion : MonoBehaviour
             //Quaternion desiredRotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
             //transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, Time.deltaTime * heightAcceleration);
 
-            UnityEngine.Debug.Log(hips.position);
+            //UnityEngine.Debug.Log(hips.position);
 
         }
 
