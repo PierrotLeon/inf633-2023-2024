@@ -15,6 +15,7 @@ public class CustomTerrain : MonoBehaviour {
     [Header("Instance brush attributes")]
     public GameObject object_prefab = null;
     public GameObject[] prefabs;
+    public GameObject[] rocks;
     public float min_scale = 0.8f;
     public float max_scale = 1.2f;
 
@@ -75,6 +76,25 @@ public class CustomTerrain : MonoBehaviour {
             }
         }
         saveDetails();
+
+        for (int i = 0; i < rocks.Length; i++) {
+            Rigidbody rockRigidBody = object_prefab.GetComponent<Rigidbody>();
+            if (rockRigidBody == null) {
+                rockRigidBody = rocks[i].AddComponent<Rigidbody>();
+                print("Made the rock a rigid body " + (i + 1) + " : " + (rockRigidBody != null));
+            } else {
+                print("the rock " + (i + 1) + " is already a rigid body");
+            }
+
+            print("the rock " + (i + 1) + " has already a collider : " + (object_prefab.GetComponent<SphereCollider>() != null));
+            
+            // if (object_prefab.GetComponent<SphereCollider>() == null) {
+            //     SphereCollider rockCollider = rocks[i].AddComponent<SphereCollider>();
+            //     print("Added collider to the rock " + (i + 1) + " : " + (rockCollider != null) + " " + rockCollider.enabled + " " + rockCollider.attachedRigidbody != null);
+            // } else {
+            //     print("the rock " + (i + 1) + " has already a collider");
+            // }
+        }
 
         cam = GameObject.FindGameObjectWithTag("SecondCamera").GetComponent<Camera>();
     }
@@ -284,5 +304,11 @@ public class CustomTerrain : MonoBehaviour {
     {
         int tree = rnd.Next(0, 3);
         object_prefab = prefabs[tree];
+    }
+
+    public void changeRock()
+    {
+        int rock_i = rnd.Next(0, rocks.Length - 1);
+        object_prefab = rocks[rock_i];
     }
 }
