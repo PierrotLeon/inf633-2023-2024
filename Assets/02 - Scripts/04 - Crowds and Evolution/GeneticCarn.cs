@@ -48,7 +48,7 @@ public class GeneticCarn : MonoBehaviour
         {
             animals.Add(makeAnimal());
         }
-        //UnityEngine.Debug.Log("N° of carns: " + animals.Count.ToString()); ;
+        UnityEngine.Debug.Log("N° of carns: " + animals.Count.ToString());
 
         // Update grass elements/food resources.
         //updateResources();
@@ -80,6 +80,7 @@ public class GeneticCarn : MonoBehaviour
     public GameObject makeAnimal(Vector3 position)
     {
         GameObject animal = Instantiate(animalPrefab, transform);
+        animal.transform.SetParent(null);
         animal.GetComponent<AnimalCarn>().Setup(customTerrain, this);
         animal.transform.position = position;
         animal.transform.Rotate(0.0f, UnityEngine.Random.value * 360.0f, 0.0f);

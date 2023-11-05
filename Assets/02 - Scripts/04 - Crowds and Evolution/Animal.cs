@@ -91,12 +91,13 @@ public class Animal : MonoBehaviour
             genetic_algo.addOffspring(this);
         }
 
-        // If the energy is below 0, the animal dies.
+                // If the energy is below 0, the animal dies.
         if (energy < 0)
         {
             energy = 0.0f;
             genetic_algo.removeAnimal(this);
         }
+
 
         // Update the color of the animal as a function of the energy that it contains.
         if (mat != null)

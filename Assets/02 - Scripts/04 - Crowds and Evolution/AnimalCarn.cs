@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,7 +16,7 @@ public class AnimalCarn : MonoBehaviour
     public float maxAngle = 10.0f;
 
     [Header("Energy parameters")]
-    public float maxEnergy = 10.0f;
+    public float maxEnergy = 100.0f;
     public float lossEnergy = 0.1f;
     public float gainEnergy = 10.0f;
     private float energy;
@@ -40,10 +41,13 @@ public class AnimalCarn : MonoBehaviour
 
     // Genetic alg.
     private GeneticCarn genetic_carn = null;
+    private GeneticAlgo genetic_algo = null;
 
     // Renderer.
     private Material mat = null;
 
+    private int isHunting = 0;
+    public Transform target;
     private List<GameObject> childPrefabs = new List<GameObject>();
 
     void Start()
@@ -63,16 +67,17 @@ public class AnimalCarn : MonoBehaviour
 
     void Update()
     {
+        if (target == null)
+        {
+            isHunting = 1; // Deactivate hunting
+        }
+
         // In case something is not initialized...
         if (brain == null)
             brain = new SimpleNeuralNet(networkStruct);
         if (terrain == null)
             return;
-        if (childPrefabs != null && childPrefabs.Count == 0)
-        {
-            UpdateSetup();
-            return;
-        }
+        UpdateSetup();
 
         // Retrieve animal location in the heighmap
         int dx = (int)((tfm.position.x / terrainSize.x) * detailSize.x);
@@ -81,41 +86,71 @@ public class AnimalCarn : MonoBehaviour
         // For each frame, we lose lossEnergy
         energy -= lossEnergy;
 
-        // If the animal is located in the dimensions of the terrain and over a grass position (details[dy, dx] > 0), it eats it, gain energy and spawn an offspring.
-        if ((dx >= 0) && dx < (details.GetLength(1)) && (dy >= 0) && (dy < details.GetLength(0)) && details[dy, dx] > 0)
-        {
-            // Eat (remove) the grass and gain energy.
-            details[dy, dx] = 0;
-            energy += gainEnergy;
-            if (energy > maxEnergy)
-                energy = maxEnergy;
-
-            genetic_carn.addOffspring(this);
-        }
-
-        // If the energy is below 0, the animal dies.
-        if (energy < 0)
-        {
-            energy = 0.0f;
-            genetic_carn.removeAnimal(this);
-        }
-
-        // Update the color of the animal as a function of the energy that it contains.
-        if (mat != null)
-            mat.color = Color.white * (energy / maxEnergy);
 
         // 1. Update receptor.
         UpdateVision();
 
         DrawVisionLines();
+        float[] output = new float[0];
+        // 2. Use brain or hunt.
 
-        // 2. Use brain.
-        float[] output = brain.getOutput(vision);
+        if (isHunting == 2)
+        {
+
+            // Look for the direction of the target game object
+            Vector3 targetDirection = target.transform.position - transform.position;
+            targetDirection.y = 0.0f; // Assuming you want to ignore vertical component
+            targetDirection.Normalize();
+            output = new float[] { Mathf.Atan2(targetDirection.z, targetDirection.x) / (2 * Mathf.PI) };
+            float anglemax = Vector3.Angle(transform.forward, targetDirection);
+
+            // Convert the angle to a value between -1 and 1
+            output = new float[] { anglemax / 30};
+
+            float distanceToTarget = Vector3.Distance(transform.position, target.transform.position);
+            float range = 5.0f; // Adjust this value to set your desired range
+            GeneticAlgo geneticalgoComponent = terrain.GetComponent<GeneticAlgo>();
+            Animal animalComponent = target.GetComponent<Animal>();
+            if (distanceToTarget <= range)
+            {
+                target = null;
+                isHunting = 0;
+                geneticalgoComponent.removeAnimal(animalComponent);
+                UnityEngine.Debug.Log("cumeu");
+
+                energy += gainEnergy;
+                if (energy > maxEnergy)
+                    energy = maxEnergy;
+
+                genetic_carn.addOffspring(this);
+            }
+        }
+        else if (isHunting == 0)
+        {
+            // If the animal is located in the dimensions of the terrain and over a grass position (details[dy, dx] > 0), it eats it, gain energy and spawn an offspring.
+            if (UnityEngine.Random.Range(1, 100) < 10)
+            {
+                isHunting = 1;
+            }
+            if (energy < 0)
+            {
+                energy = 0.0f;
+                genetic_carn.removeAnimal(this);
+            }
+
+            output = brain.getOutput(vision);
+        }
+
+        else 
+        {
+            output = brain.getOutput(vision);
+        }
 
 
-        // 3. Act using actuators.
-        float angle = (output[0] * 2.0f - 1.0f) * maxAngle;
+            // 3. Act using actuators.
+            float angle = (output[0] * 2.0f - 1.0f) * maxAngle;
         tfm.Rotate(0.0f, angle, 0.0f);
+
     }
 
     /// <summary>
@@ -133,6 +168,30 @@ public class AnimalCarn : MonoBehaviour
             float sx = tfm.position.x * ratio.x;
             float sy = tfm.position.z * ratio.y;
             vision[i] = 1.0f;
+
+            RaycastHit hit;
+            Vector3 rayDirection = forwardAnimal.normalized;
+            if(isHunting == 1)
+            {
+                bool found = false;
+                foreach (GameObject prefab in childPrefabs)
+                {
+                   
+                    Vector3 position1 = new Vector3(transform.position.x, 0, transform.position.z); // Projected position of current object
+                    Vector3 position2 = new Vector3(prefab.transform.position.x, 0, prefab.transform.position.z); // Projected position of prefab
+
+                    float distance = Vector3.Distance(position1, position2);
+
+                    if (distance <= 50.0f && prefab != null && prefab.name != "Animal - Carnivorous(Clone)")
+                    {
+                        target = prefab.transform;
+                        isHunting = 2;
+                        found = true;
+                    }
+                }
+                if (!found)
+                    isHunting = 0;
+            }
 
             // Interate over vision length.
             for (float distance = 1.0f; distance < maxVision; distance += 0.5f)
@@ -156,6 +215,8 @@ public class AnimalCarn : MonoBehaviour
                     break;
                 }
             }
+
+           
         }
     }
 
@@ -180,6 +241,11 @@ public class AnimalCarn : MonoBehaviour
 
     private void UpdateSetup()
     {
+        detailSize = terrain.detailSize();
+        Vector3 gsz = terrain.terrainSize();
+        terrainSize = new Vector2(gsz.x, gsz.z);
+        details = terrain.getDetails();
+
         int childCount = terrain.transform.childCount;
         childPrefabs.Clear(); // Clear the list before populating it again
 
